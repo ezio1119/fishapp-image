@@ -10,10 +10,9 @@ proto:
 	docker run --rm -v $(CURRENT_DIR)/pb:/pb -v $(CURRENT_DIR)/schema:/proto ezio1119/protoc \
 	-I/proto \
 	-I/go/src/github.com/envoyproxy/protoc-gen-validate \
-	--go_opt=paths=source_relative \
 	--go_out=plugins=grpc:/pb \
-	--validate_out="lang=go,paths=source_relative:/pb" \
-	image/image.proto
+	--validate_out="lang=go:/pb" \
+	image.proto
 
 cli:
 	docker run --rm --net=fishapp-net znly/grpc_cli \
@@ -56,7 +55,7 @@ exec:
 	$(DC) exec $(API) sh
 
 logs:
-	docker logs -f fishapp-post_post_1
+	docker logs -f --tail 100 fishapp-image_image_1
 
 dblogs:
 	$(DC) logs -f $(API)-db

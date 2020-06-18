@@ -10,7 +10,7 @@ services:
       MYSQL_DATABASE: image_DB
       TZ: Asia/Tokyo　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
     ports:
-      - "7306:3306"
+      - "9306:3306"
 
   image:
     build:

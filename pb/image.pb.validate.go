@@ -135,9 +135,19 @@ func (m *ImageInfo) Validate() error {
 		return nil
 	}
 
-	// no validation rules for OwnerId
+	if m.GetOwnerId() < 1 {
+		return ImageInfoValidationError{
+			field:  "OwnerId",
+			reason: "value must be greater than or equal to 1",
+		}
+	}
 
-	// no validation rules for OwnerType
+	if _, ok := OwnerType_name[int32(m.GetOwnerType())]; !ok {
+		return ImageInfoValidationError{
+			field:  "OwnerType",
+			reason: "value must be one of the defined enum values",
+		}
+	}
 
 	return nil
 }
@@ -301,7 +311,13 @@ func (m *BatchCreateImagesReq) Validate() error {
 		}
 
 	case *BatchCreateImagesReq_Chunk:
-		// no validation rules for Chunk
+
+		if len(m.GetChunk()) > 65536 {
+			return BatchCreateImagesReqValidationError{
+				field:  "Chunk",
+				reason: "value length must be at most 65536 bytes",
+			}
+		}
 
 	default:
 		return BatchCreateImagesReqValidationError{
@@ -369,3 +385,168 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = BatchCreateImagesReqValidationError{}
+
+// Validate checks the field values on BatchDeleteImagesReq with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *BatchDeleteImagesReq) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	_BatchDeleteImagesReq_Id_Unique := make(map[int64]struct{}, len(m.GetId()))
+
+	for idx, item := range m.GetId() {
+		_, _ = idx, item
+
+		if _, exists := _BatchDeleteImagesReq_Id_Unique[item]; exists {
+			return BatchDeleteImagesReqValidationError{
+				field:  fmt.Sprintf("Id[%v]", idx),
+				reason: "repeated value must contain unique items",
+			}
+		} else {
+			_BatchDeleteImagesReq_Id_Unique[item] = struct{}{}
+		}
+
+		// no validation rules for Id[idx]
+	}
+
+	return nil
+}
+
+// BatchDeleteImagesReqValidationError is the validation error returned by
+// BatchDeleteImagesReq.Validate if the designated constraints aren't met.
+type BatchDeleteImagesReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e BatchDeleteImagesReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e BatchDeleteImagesReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e BatchDeleteImagesReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e BatchDeleteImagesReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e BatchDeleteImagesReqValidationError) ErrorName() string {
+	return "BatchDeleteImagesReqValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e BatchDeleteImagesReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sBatchDeleteImagesReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = BatchDeleteImagesReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = BatchDeleteImagesReqValidationError{}
+
+// Validate checks the field values on DeleteImagesByOwnerIDReq with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *DeleteImagesByOwnerIDReq) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	if m.GetOwnerId() < 1 {
+		return DeleteImagesByOwnerIDReqValidationError{
+			field:  "OwnerId",
+			reason: "value must be greater than or equal to 1",
+		}
+	}
+
+	if _, ok := OwnerType_name[int32(m.GetOwnerType())]; !ok {
+		return DeleteImagesByOwnerIDReqValidationError{
+			field:  "OwnerType",
+			reason: "value must be one of the defined enum values",
+		}
+	}
+
+	return nil
+}
+
+// DeleteImagesByOwnerIDReqValidationError is the validation error returned by
+// DeleteImagesByOwnerIDReq.Validate if the designated constraints aren't met.
+type DeleteImagesByOwnerIDReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteImagesByOwnerIDReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteImagesByOwnerIDReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteImagesByOwnerIDReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteImagesByOwnerIDReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteImagesByOwnerIDReqValidationError) ErrorName() string {
+	return "DeleteImagesByOwnerIDReqValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteImagesByOwnerIDReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteImagesByOwnerIDReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteImagesByOwnerIDReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteImagesByOwnerIDReqValidationError{}

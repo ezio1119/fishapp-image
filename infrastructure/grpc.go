@@ -17,7 +17,7 @@ func NewGrpcServer(middL middleware.Middleware, imageController pb.ImageServiceS
 		)),
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			middL.StreamLogingInterceptor(),
-			middL.StreamRecoveryInterceptor(),
+			// middL.StreamRecoveryInterceptor(),
 			middL.StreamValidationInterceptor(),
 		)),
 	)

@@ -10,6 +10,7 @@ import (
 	"github.com/ezio1119/fishapp-image/models"
 	"github.com/ezio1119/fishapp-image/pb"
 	"github.com/ezio1119/fishapp-image/usecase/interactor"
+	"github.com/golang/protobuf/ptypes/empty"
 )
 
 type imageController struct {
@@ -37,10 +38,14 @@ func (c *imageController) BatchCreateImages(stream pb.ImageService_BatchCreateIm
 
 		switch x := req.Data.(type) {
 		case *pb.BatchCreateImagesReq_Info:
-			fmt.Println("BatchCreateImagesReq_Info")
+			o, err := convOwnerType(x.Info.OwnerType)
+			if err != nil {
+				return err
+			}
+
 			img := &models.Image{
 				OwnerID:   x.Info.OwnerId,
-				OwnerType: x.Info.OwnerType,
+				OwnerType: o,
 				Buf:       &bytes.Buffer{},
 			}
 			images = append(images, img)
@@ -68,4 +73,26 @@ func (c *imageController) BatchCreateImages(stream pb.ImageService_BatchCreateIm
 	}
 
 	return stream.SendAndClose(&pb.BatchCreateImagesRes{Images: imgsP})
+}
+
+func (c *imageController) BatchDeleteImages(ctx context.Context, in *pb.BatchDeleteImagesReq) (*empty.Empty, error) {
+	ctx, cancel := context.WithTimeout(ctx, conf.C.Sv.TimeoutDuration)
+	defer cancel()
+
+	if err := c.imageInteractor.DeleteImagesByOwnerID(int64(in.OwnerType), in.OwnerId); err != nil {
+		return nil, err
+	}
+
+	return &empty.Empty{}, nil
+}
+
+func (c *imageController) DeleteImagesByOwnerID(ctx context.Context, in *pb.DeleteImagesByOwnerIDReq) (*empty.Empty, error) {
+	ctx, cancel := context.WithTimeout(ctx, conf.C.Sv.TimeoutDuration)
+	defer cancel()
+
+	if err := c.imageInteractor.DeleteImagesByOwnerID(int64(in.OwnerType), in.OwnerId); err != nil {
+		return nil, err
+	}
+
+	return &empty.Empty{}, nil
 }

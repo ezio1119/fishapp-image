@@ -43,6 +43,7 @@ func main() {
 			imageUploaderRepo,
 		),
 	)
+
 	server := infrastructure.NewGrpcServer(middleware.InitMiddleware(), imageC)
 
 	list, err := net.Listen("tcp", ":"+conf.C.Sv.Port)

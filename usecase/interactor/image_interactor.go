@@ -20,6 +20,8 @@ func NewImageInteractor(db *gorm.DB, ur repo.ImageUploaderRepo) *imageInteractor
 
 type ImageInteractor interface {
 	BatchCreateImages(ctx context.Context, images []*models.Image) error
+	BatchDeleteImages(ctx context.Context, id []int64) error
+	DeleteImagesByOwnerID(ownerType int64, ownerID int64) error
 }
 
 func (i *imageInteractor) BatchCreateImages(ctx context.Context, images []*models.Image) error {
@@ -41,4 +43,12 @@ func (i *imageInteractor) BatchCreateImages(ctx context.Context, images []*model
 
 	return nil
 
+}
+
+func (i *imageInteractor) BatchDeleteImages(ctx context.Context, id []int64) error {
+	return i.db.Where("id IN (?)", id).Delete(&models.Image{}).Error
+}
+
+func (i *imageInteractor) DeleteImagesByOwnerID(ownerType int64, ownerID int64) error {
+	return i.db.Where("owner_id = ? AND owner_type = ?", ownerID, ownerType).Delete(&models.Image{}).Error
 }

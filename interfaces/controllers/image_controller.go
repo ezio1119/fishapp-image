@@ -21,6 +21,28 @@ func NewImageController(i interactor.ImageInteractor) *imageController {
 	return &imageController{i}
 }
 
+func (c *imageController) ListImagesByOwnerID(ctx context.Context, in *pb.ListImagesByOwnerIDReq) (*pb.ListImagesByOwnerIDRes, error) {
+	ctx, cancel := context.WithTimeout(ctx, conf.C.Sv.TimeoutDuration)
+	defer cancel()
+
+	o, err := convOwnerType(in.OwnerType)
+	if err != nil {
+		return nil, err
+	}
+
+	list, err := c.imageInteractor.ListImagesByOwnerID(ctx, int64(o), in.OwnerId)
+	if err != nil {
+		return nil, err
+	}
+
+	listP, err := convListImageProto(list)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.ListImagesByOwnerIDRes{Images: listP}, nil
+}
+
 func (c *imageController) BatchCreateImages(stream pb.ImageService_BatchCreateImagesServer) error {
 	ctx, cancel := context.WithTimeout(stream.Context(), conf.C.Sv.TimeoutDuration)
 	defer cancel()
@@ -79,7 +101,7 @@ func (c *imageController) BatchDeleteImages(ctx context.Context, in *pb.BatchDel
 	ctx, cancel := context.WithTimeout(ctx, conf.C.Sv.TimeoutDuration)
 	defer cancel()
 
-	if err := c.imageInteractor.DeleteImagesByOwnerID(int64(in.OwnerType), in.OwnerId); err != nil {
+	if err := c.imageInteractor.BatchDeleteImages(ctx, in.Ids); err != nil {
 		return nil, err
 	}
 
@@ -90,7 +112,12 @@ func (c *imageController) DeleteImagesByOwnerID(ctx context.Context, in *pb.Dele
 	ctx, cancel := context.WithTimeout(ctx, conf.C.Sv.TimeoutDuration)
 	defer cancel()
 
-	if err := c.imageInteractor.DeleteImagesByOwnerID(int64(in.OwnerType), in.OwnerId); err != nil {
+	o, err := convOwnerType(in.OwnerType)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := c.imageInteractor.DeleteImagesByOwnerID(ctx, int64(o), in.OwnerId); err != nil {
 		return nil, err
 	}
 

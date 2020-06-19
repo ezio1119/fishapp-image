@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	"cloud.google.com/go/storage"
@@ -18,7 +19,7 @@ func NewImageUploaderRepo(c *storage.Client) repo.ImageUploaderRepo {
 }
 
 func (r *imageUploaderRepo) UploadImage(ctx context.Context, image io.Reader, objName string) error {
-
+	fmt.Println(objName)
 	wc := r.client.Bucket(conf.C.Gcs.BucketName).Object(objName).NewWriter(ctx)
 
 	if _, err := io.Copy(wc, image); err != nil {

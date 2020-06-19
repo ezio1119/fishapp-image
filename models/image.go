@@ -19,6 +19,6 @@ type OwnerType int64
 
 const (
 	POST OwnerType = iota + 1
-	PROFILE
+	USER
 	MESSAGE
 )

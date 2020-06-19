@@ -16,7 +16,7 @@ proto:
 
 cli:
 	docker run --rm --net=fishapp-net znly/grpc_cli \
-	call $(API):50051 $(API).PostService.$(m) "$(q)"
+	call $(API):50051 $(API).ImageService.$(m) "$(q)"
 
 migrate:
 	docker run --rm --name migrate --net=fishapp-net \

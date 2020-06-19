@@ -47,8 +47,8 @@ func convOwnerTypeProto(o models.OwnerType) (pb.OwnerType, error) {
 	switch o {
 	case models.POST:
 		return pb.OwnerType_POST, nil
-	case models.PROFILE:
-		return pb.OwnerType_PROFILE, nil
+	case models.USER:
+		return pb.OwnerType_USER, nil
 	case models.MESSAGE:
 		return pb.OwnerType_MESSAGE, nil
 	default:
@@ -60,8 +60,8 @@ func convOwnerType(o pb.OwnerType) (models.OwnerType, error) {
 	switch o {
 	case pb.OwnerType_POST:
 		return models.POST, nil
-	case pb.OwnerType_PROFILE:
-		return models.PROFILE, nil
+	case pb.OwnerType_USER:
+		return models.USER, nil
 	case pb.OwnerType_MESSAGE:
 		return models.MESSAGE, nil
 	default:

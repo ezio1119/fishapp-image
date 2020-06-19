@@ -19,9 +19,19 @@ func NewImageInteractor(db *gorm.DB, ur repo.ImageUploaderRepo) *imageInteractor
 }
 
 type ImageInteractor interface {
+	ListImagesByOwnerID(ctx context.Context, ownerType int64, ownerID int64) ([]*models.Image, error)
 	BatchCreateImages(ctx context.Context, images []*models.Image) error
 	BatchDeleteImages(ctx context.Context, id []int64) error
-	DeleteImagesByOwnerID(ownerType int64, ownerID int64) error
+	DeleteImagesByOwnerID(ctx context.Context, ownerType int64, ownerID int64) error
+}
+
+func (i *imageInteractor) ListImagesByOwnerID(ctx context.Context, ownerType int64, ownerID int64) ([]*models.Image, error) {
+	images := []*models.Image{}
+	if err := i.db.Where("owner_id = ? AND owner_type = ?", ownerID, ownerType).Find(&images).Error; err != nil {
+		return nil, err
+	}
+
+	return images, nil
 }
 
 func (i *imageInteractor) BatchCreateImages(ctx context.Context, images []*models.Image) error {
@@ -49,6 +59,6 @@ func (i *imageInteractor) BatchDeleteImages(ctx context.Context, id []int64) err
 	return i.db.Where("id IN (?)", id).Delete(&models.Image{}).Error
 }
 
-func (i *imageInteractor) DeleteImagesByOwnerID(ownerType int64, ownerID int64) error {
+func (i *imageInteractor) DeleteImagesByOwnerID(ctx context.Context, ownerType int64, ownerID int64) error {
 	return i.db.Where("owner_id = ? AND owner_type = ?", ownerID, ownerType).Delete(&models.Image{}).Error
 }

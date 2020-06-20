@@ -55,10 +55,34 @@ func (i *imageInteractor) BatchCreateImages(ctx context.Context, images []*model
 
 }
 
-func (i *imageInteractor) BatchDeleteImages(ctx context.Context, id []int64) error {
-	return i.db.Where("id IN (?)", id).Delete(&models.Image{}).Error
+func (i *imageInteractor) BatchDeleteImages(ctx context.Context, ids []int64) error {
+	images := []*models.Image{}
+
+	if err := i.db.Where("id IN (?)", ids).Find(images).Error; err != nil {
+		return nil
+	}
+
+	for _, img := range images {
+		if err := i.imageUploaderRepo.DeleteUploadedImage(ctx, img.Name); err != nil {
+			return err
+		}
+	}
+
+	return i.db.Where("id IN (?)", ids).Delete(&models.Image{}).Error
 }
 
 func (i *imageInteractor) DeleteImagesByOwnerID(ctx context.Context, ownerType int64, ownerID int64) error {
+	images := []*models.Image{}
+
+	if err := i.db.Where("owner_id = ? AND owner_type = ?", ownerID, ownerType).Find(&images).Error; err != nil {
+		return nil
+	}
+
+	for _, img := range images {
+		if err := i.imageUploaderRepo.DeleteUploadedImage(ctx, img.Name); err != nil {
+			return err
+		}
+	}
+
 	return i.db.Where("owner_id = ? AND owner_type = ?", ownerID, ownerType).Delete(&models.Image{}).Error
 }

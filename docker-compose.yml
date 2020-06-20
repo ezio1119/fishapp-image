@@ -15,7 +15,7 @@ services:
   image:
     build:
       context: .
-      target: dev
+      target: prod
     volumes:
       - .:/app
       - ~/Downloads/fishapp-279608-ca691d887e0d.json:/fishapp-279608-ca691d887e0d.json

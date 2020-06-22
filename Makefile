@@ -45,7 +45,7 @@ waitdb: updb
 migrate: waitdb
 	docker run --rm --name migrate --net $(NET) \
 	-v $(CWD)/db/sql:/sql migrate/migrate:latest \
-	-path /sql/ -database "mysql://$(DB_USER):$(DB_PWD)@tcp($(DB_SVC):3306)/$(DB_NAME)" up
+	-path /sql/ -database "mysql://$(DB_USER):$(DB_PWD)@tcp($(DB_SVC):3306)/$(DB_NAME)" $(MIGRATE)
 
 up: migrate
 	docker-compose up -d $(SVC)

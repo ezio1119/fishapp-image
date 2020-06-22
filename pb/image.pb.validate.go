@@ -633,6 +633,81 @@ var _ interface {
 	ErrorName() string
 } = BatchDeleteImagesReqValidationError{}
 
+// Validate checks the field values on BatchDeleteImagesByOwnerIDsReq with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, an error is returned.
+func (m *BatchDeleteImagesByOwnerIDsReq) Validate() error {
+	if m == nil {
+		return nil
+	}
+
+	if _, ok := OwnerType_name[int32(m.GetOwnerType())]; !ok {
+		return BatchDeleteImagesByOwnerIDsReqValidationError{
+			field:  "OwnerType",
+			reason: "value must be one of the defined enum values",
+		}
+	}
+
+	return nil
+}
+
+// BatchDeleteImagesByOwnerIDsReqValidationError is the validation error
+// returned by BatchDeleteImagesByOwnerIDsReq.Validate if the designated
+// constraints aren't met.
+type BatchDeleteImagesByOwnerIDsReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e BatchDeleteImagesByOwnerIDsReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e BatchDeleteImagesByOwnerIDsReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e BatchDeleteImagesByOwnerIDsReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e BatchDeleteImagesByOwnerIDsReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e BatchDeleteImagesByOwnerIDsReqValidationError) ErrorName() string {
+	return "BatchDeleteImagesByOwnerIDsReqValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e BatchDeleteImagesByOwnerIDsReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sBatchDeleteImagesByOwnerIDsReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = BatchDeleteImagesByOwnerIDsReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = BatchDeleteImagesByOwnerIDsReqValidationError{}
+
 // Validate checks the field values on DeleteImagesByOwnerIDReq with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, an error is returned.

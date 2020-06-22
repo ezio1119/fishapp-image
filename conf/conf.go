@@ -58,8 +58,16 @@ func init() {
 	}
 
 	C.Sv.DevImagesPath = dir + "/" + C.Sv.DevImagesPath
-
 	C.Sv.TimeoutDuration = time.Duration(C.Sv.Timeout) * time.Second
+
+	if C.Sv.Debug {
+		if _, err := os.Stat(C.Sv.DevImagesPath); os.IsNotExist(err) {
+			if err := os.Mkdir(C.Sv.DevImagesPath, 0755); err != nil {
+				panic(err)
+			}
+		}
+
+	}
 
 	spew.Dump(C)
 }

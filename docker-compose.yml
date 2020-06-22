@@ -15,10 +15,9 @@ services:
   image:
     build:
       context: .
-      target: prod
+      target: dev
     volumes:
       - .:/app
-      - ./images:/images
     depends_on:
       - image-db
     environment:

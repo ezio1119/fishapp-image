@@ -30,7 +30,7 @@ func (c *imageController) ListImagesByOwnerID(ctx context.Context, in *pb.ListIm
 		return nil, err
 	}
 
-	list, err := c.imageInteractor.ListImagesByOwnerID(ctx, int64(o), in.OwnerId)
+	list, err := c.imageInteractor.ListImagesByOwnerID(ctx, o, in.OwnerId)
 	if err != nil {
 		return nil, err
 	}
@@ -108,6 +108,22 @@ func (c *imageController) BatchDeleteImages(ctx context.Context, in *pb.BatchDel
 	return &empty.Empty{}, nil
 }
 
+func (c *imageController) BatchDeleteImagesByOwnerIDs(ctx context.Context, in *pb.BatchDeleteImagesByOwnerIDsReq) (*empty.Empty, error) {
+	ctx, cancel := context.WithTimeout(ctx, conf.C.Sv.TimeoutDuration)
+	defer cancel()
+
+	o, err := convOwnerType(in.OwnerType)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := c.imageInteractor.BatchDeleteImagesByOwnerIDs(ctx, o, in.OwnerIds); err != nil {
+		return nil, err
+	}
+
+	return &empty.Empty{}, nil
+}
+
 func (c *imageController) DeleteImagesByOwnerID(ctx context.Context, in *pb.DeleteImagesByOwnerIDReq) (*empty.Empty, error) {
 	ctx, cancel := context.WithTimeout(ctx, conf.C.Sv.TimeoutDuration)
 	defer cancel()
@@ -117,7 +133,7 @@ func (c *imageController) DeleteImagesByOwnerID(ctx context.Context, in *pb.Dele
 		return nil, err
 	}
 
-	if err := c.imageInteractor.DeleteImagesByOwnerID(ctx, int64(o), in.OwnerId); err != nil {
+	if err := c.imageInteractor.DeleteImagesByOwnerID(ctx, o, in.OwnerId); err != nil {
 		return nil, err
 	}
 

@@ -1,5 +1,16 @@
 version: '3.4'
 services:
+  image:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    depends_on:
+      - image-db
+    environment:
+      TZ: Asia/Tokyo
+
   image-db:
     image: mysql:8.0
     volumes:
@@ -11,17 +22,6 @@ services:
       TZ: Asia/Tokyo　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
     ports:
       - "9306:3306"
-
-  image:
-    build:
-      context: .
-      target: dev
-    volumes:
-      - .:/app
-    depends_on:
-      - image-db
-    environment:
-      TZ: Asia/Tokyo
 
 volumes:
   image-data:

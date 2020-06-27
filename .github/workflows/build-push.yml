@@ -20,13 +20,12 @@ jobs:
       with:
           version: '290.0.1'
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
 
     - run: |
         gcloud auth configure-docker
     - name: Build
       run: |
-        docker build -t asia.gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA .
+        docker build --target prod -t asia.gcr.io/$GKE_PROJECT/$IMAGE:$GITHUB_SHA .
     
     - name: Publish
       run: |
